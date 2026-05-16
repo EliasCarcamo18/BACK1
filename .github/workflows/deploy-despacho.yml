@@ -25,7 +25,7 @@ jobs:
 
     - name: Build imagen Backend y push a ECR
       run: |
-        cd ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+        cd back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
         docker build -t back-despacho .
         docker tag back-despacho:latest 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-despacho:latest
         docker push 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-despacho:latest
@@ -33,7 +33,7 @@ jobs:
     - name: Desplegar Backend vía SSM
       run: |
         aws ssm send-command \
-          --instance-ids i-0123456789abcdef0 \
+          --instance-ids TU_ID_DE_INSTANCIA_EC2 \
           --document-name "AWS-RunShellScript" \
           --comment "Actualizar back-despacho desde ECR" \
           --parameters '{"commands":[
