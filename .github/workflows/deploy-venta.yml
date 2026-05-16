@@ -15,34 +15,33 @@ jobs:
     - name: Configurar credenciales AWS
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ASIAYD7RFHZU6GRMESJB
+        aws-secret-access-key: SbT+zvm3w8itK1dtTeZqryL200uvrt6xEnmiku9R
+        aws-session-token: IQoJb3JpZ2luX2VjEND//////////wEaCXVzLXdlc3QtMiJHMEUCIQD5p0Lzc1rxANKW/DGNhX4991MBJLS8XcK1o9RstYe8BAIgWyA96VaxWRh88s2tIqomfPQBnzhhP9RsuTgMv4sGm0oqsAIImf//////////ARABGgw1NTgzMTQ2MzQ4NTciDLaMsGgbKVl8WDvWzCqEAsv4um3I786rKrTjZ1HO198TjgW2uvTSl3/FyauxgdCldaf4OVN479dzz9XWBkx06A5iJ7Z5rng4guFa7UkYFjkkZG3Rbc/0Z6P+wcRINuADMdY4sKYnjjEO62ktqzwgyZUYcZqgF2Zm4DtUImbrvmu2Ls/LOxV0xBFG2SgjRwLR4bAp0fOqK0KbozATiPU+rcXHpNp5MHG1hdDXD9Zs2FUaDln5O2wfmCRSDgPnkPZitZJLi8PJMe8DeGHtuy23crNqWMr0KWxZkcXlT9DdX6Ql1qANYB8ze3NpJAiFU+rada5Z9eodE/xLfM/VqC4AZaKJI2tOqYQZ1v6XK+d5oQT5tEJiMPn7o9AGOp0BxXpJb/TIPR7mhkBtNjPgGIOJtw4RD0gH9yLebKv7HaMUyVEcaYNIEI7iuVbG5JpmukecSde5rS67kpxOFRjGdqlBbWZU5/ttO7FT6X58XEvFXd9Tj9IJo2gbpYhssmPo0KqdriDh41TS1zdLA8HxNxfP+o/j3+3lGyEp9BskZQmIMJMMw6jr8fNAG8IjS0ivt5eoPuN4YpLQBEUdTA==
+        aws-region: us-east-1
 
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Configurar credenciales AWS
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: us-east-1 # <-- Ponemos la región fija aquí
+    - name: Build imagen Backend y push a ECR
+      run: |
+        cd ./back-Ventas_SpringBoot/Springboot-API-REST-VENTAS
+        docker build -t back-venta .
+        docker tag back-venta:latest 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-venta:latest
+        docker push 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-venta:latest
 
     - name: Desplegar Backend vía SSM
       run: |
         aws ssm send-command \
-          --instance-ids ${{ secrets.EC2_BACKEND_INSTANCE_ID }} \
+          --instance-ids i-035c8a0d0ca2a6be6 \
           --document-name "AWS-RunShellScript" \
           --comment "Actualizar back-venta desde ECR" \
           --parameters '{"commands":[
             "set -e",
-            "aws ecr get-login-password --region '${{ secrets.AWS_REGION }}' | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
-            "docker pull ${{ secrets.ECR_REPO_URL_BACKEND_VENTA }}:latest",
+            "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 558314634857.dkr.ecr.us-east-1.amazonaws.com",
+            "docker pull 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-venta:latest",
             "docker stop contenedor-back-venta || true",
             "docker rm contenedor-back-venta || true",
-            "docker run -d --name contenedor-back-venta -p 5001:5001 ${{ secrets.ECR_REPO_URL_BACKEND_VENTA }}:latest"
+            "docker run -d --name contenedor-back-venta -p 5001:5001 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-venta:latest"
           ]}' \
           --output text
