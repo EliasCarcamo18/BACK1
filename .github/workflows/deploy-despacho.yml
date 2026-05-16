@@ -18,9 +18,8 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Construir y Publicar Imagen de Despacho
-      # 🌟 CORREGIDO: Ruta exacta basada en tu repositorio real
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest ./back-Despachos_SpringBoot/Springboot-API-REST
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest ${{ github.workspace }}/back-Despachos_SpringBoot/Springboot-API-REST
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest
 
     - name: Desplegar en AWS EC2 vía SSH

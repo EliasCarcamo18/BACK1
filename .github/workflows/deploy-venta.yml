@@ -18,9 +18,8 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Construir y Publicar Imagen de Venta
-      # 🌟 CORREGIDO: Ruta exacta basada en tu repositorio real
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest ./back-Ventas_SpringBoot/Springboot-API-REST
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest ${{ github.workspace }}/back-Ventas_SpringBoot/Springboot-API-REST
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
 
     - name: Desplegar en AWS EC2 vía SSH
