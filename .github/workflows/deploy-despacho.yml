@@ -19,7 +19,8 @@ jobs:
 
     - name: Construir y Publicar Imagen de Despacho
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+        cd ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest
 
     - name: Desplegar en AWS EC2 vía SSH

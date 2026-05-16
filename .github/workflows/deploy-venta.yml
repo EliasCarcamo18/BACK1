@@ -19,7 +19,8 @@ jobs:
 
     - name: Construir y Publicar Imagen de Venta
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest ./back-Ventas_SpringBoot/Springboot-API-REST-VENTAS
+        cd ./back-Ventas_SpringBoot/Springboot-API-REST
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
 
     - name: Desplegar en AWS EC2 vía SSH
