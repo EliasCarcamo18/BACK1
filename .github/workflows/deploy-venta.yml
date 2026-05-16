@@ -18,9 +18,9 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Construir y Publicar Imagen de Venta
-      # 🌟 IMPORTANTE: Le decimos que compile usando la subcarpeta de venta
+      # 🌟 CORREGIDO: Ruta exacta basada en tu repositorio real
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest ./back_venta
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest ./back-Ventas_SpringBoot/Springboot-API-REST
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
 
     - name: Desplegar en AWS EC2 vía SSH
@@ -30,7 +30,7 @@ jobs:
         username: ec2-user
         key: ${{ secrets.AWS_SSH_KEY }}
         script: |
-          cd /home/ec2-user/back_venta || mkdir -p /home/ec2-user/back_venta
+          cd /home/ec2-user/back-Ventas_SpringBoot || mkdir -p /home/ec2-user/back-Ventas_SpringBoot
           sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
           sudo docker stop contenedor-back-venta || true
           sudo docker rm contenedor-back-venta || true

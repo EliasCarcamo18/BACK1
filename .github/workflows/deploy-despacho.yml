@@ -18,9 +18,9 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Construir y Publicar Imagen de Despacho
-      # 🌟 IMPORTANTE: Le decimos que compile usando la subcarpeta de despacho
+      # 🌟 CORREGIDO: Ruta exacta basada en tu repositorio real
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest ./back_despacho
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest ./back-Despachos_SpringBoot/Springboot-API-REST
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest
 
     - name: Desplegar en AWS EC2 vía SSH
@@ -30,7 +30,7 @@ jobs:
         username: ec2-user
         key: ${{ secrets.AWS_SSH_KEY }}
         script: |
-          cd /home/ec2-user/back_despacho || mkdir -p /home/ec2-user/back_despacho
+          cd /home/ec2-user/back-Despachos_SpringBoot || mkdir -p /home/ec2-user/back-Despachos_SpringBoot
           sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest
           sudo docker stop contenedor-back-despacho || true
           sudo docker rm contenedor-back-despacho || true
