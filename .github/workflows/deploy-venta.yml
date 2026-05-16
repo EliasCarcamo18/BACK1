@@ -34,5 +34,3 @@ jobs:
           sudo docker stop contenedor-back-venta || true
           sudo docker rm contenedor-back-venta || true
           sudo docker run -d -p 5001:5001 --name contenedor-back-venta --restart always ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
-          
-          
