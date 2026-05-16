@@ -23,12 +23,13 @@ jobs:
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build imagen Backend y push a ECR
-      run: |
-        cd ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-        docker build -t back-despacho .
-        docker tag back-despacho:latest ${{ secrets.ECR_REPO_URL_BACKEND_DESPACHO }}:latest
-        docker push ${{ secrets.ECR_REPO_URL_BACKEND_DESPACHO }}:latest
+    - name: Configurar credenciales AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: us-east-1 # <-- Ponemos la región fija aquí
 
     - name: Desplegar Backend vía SSM
       run: |
