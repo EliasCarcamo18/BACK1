@@ -19,7 +19,7 @@ jobs:
 
     - name: Construir y Publicar Imagen de Venta
       run: |
-        cd ./back-Ventas_SpringBoot/Springboot-API-REST
+        cd ./back-Ventas_SpringBoot/Springboot-API-REST-VENTAS
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-venta:latest
 

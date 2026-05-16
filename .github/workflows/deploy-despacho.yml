@@ -35,6 +35,3 @@ jobs:
           sudo docker stop contenedor-back-despacho || true
           sudo docker rm contenedor-back-despacho || true
           sudo docker run -d -p 5000:5000 --name contenedor-back-despacho --restart always ${{ secrets.DOCKERHUB_USERNAME }}/back-despacho:latest
-
-
-          
