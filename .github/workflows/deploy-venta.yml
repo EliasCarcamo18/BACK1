@@ -45,4 +45,3 @@ jobs:
             "docker run -d --name contenedor-back-venta -p 5001:5001 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-venta:latest"
           ]}' \
           --output text
-          
