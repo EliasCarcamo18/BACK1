@@ -18,7 +18,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: us-east-1
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
@@ -27,21 +27,21 @@ jobs:
       run: |
         cd ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
         docker build -t back-despacho .
-        docker tag back-despacho:latest 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-despacho:latest
-        docker push 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-despacho:latest
+        docker tag back-despacho:latest 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-despacho:latest
+        docker push 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-despacho:latest
 
     - name: Desplegar Backend vía SSM
       run: |
         aws ssm send-command \
-          --instance-ids PON_AQUI_EL_ID_DE_TU_INSTANCIA_EC2 \
+          --instance-ids i-0123456789abcdef0 \
           --document-name "AWS-RunShellScript" \
           --comment "Actualizar back-despacho desde ECR" \
           --parameters '{"commands":[
             "set -e",
-            "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 558314634857.dkr.ecr.us-east-1.amazonaws.com",
-            "docker pull 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-despacho:latest",
+            "aws ecr get-login-password --region '${{ secrets.AWS_REGION }}' | docker login --username AWS --password-stdin 558314634857.dkr.ecr.'${{ secrets.AWS_REGION }}'.amazonaws.com",
+            "docker pull 558314634857.dkr.ecr.'${{ secrets.AWS_REGION }}'.amazonaws.com/back-despacho:latest",
             "docker stop contenedor-back-despacho || true",
             "docker rm contenedor-back-despacho || true",
-            "docker run -d --name contenedor-back-despacho -p 5000:5000 558314634857.dkr.ecr.us-east-1.amazonaws.com/back-despacho:latest"
+            "docker run -d --name contenedor-back-despacho -p 5000:5000 558314634857.dkr.ecr.'${{ secrets.AWS_REGION }}'.amazonaws.com/back-despacho:latest"
           ]}' \
           --output text
