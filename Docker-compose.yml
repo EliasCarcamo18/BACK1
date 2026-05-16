@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  backend-ventas:
+    # Docker entra a la subcarpeta de Ventas que está en tu repositorio
+    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    container_name: api-ventas
+    ports:
+      - "8080:8080"
+    environment:
+      # Configurado con la IP privada de tu data-server y la BD 'ventasdb'
+      SPRING_DATASOURCE_URL: "jdbc:mysql://10.0.138.187:3306/ventasdb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root123"
+
+  backend-despachos:
+    # Docker entra a la subcarpeta de Despachos que está en tu repositorio
+    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    container_name: api-despachos
+    ports:
+      - "8081:8080" # Puerto 8081 para el EC2 para que no choquen
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://10.0.138.187:3306/ventasdb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root123"
