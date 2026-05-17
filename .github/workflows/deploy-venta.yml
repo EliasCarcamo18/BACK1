@@ -25,7 +25,9 @@ jobs:
 
     - name: Build imagen Backend y push a ECR
       run: |
-        cd back-Ventas_SpringBoot/Springboot-API-REST-VENTAS
+        TARGET_DIR=$(find . -type d -name "Springboot-API-REST-VENTAS" -print -quit)
+        if [ -z "$TARGET_DIR" ]; then echo "Error: Carpeta del proyecto no encontrada"; exit 1; fi
+        cd "$TARGET_DIR"
         docker build -t back-venta .
         docker tag back-venta:latest 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-venta:latest
         docker push 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-venta:latest
@@ -33,7 +35,7 @@ jobs:
     - name: Desplegar Backend vía SSM
       run: |
         aws ssm send-command \
-          --instance-ids TU_ID_DE_INSTANCIA_EC2 \
+          --instance-ids i-035c8a0d0ca2a6be6 \
           --document-name "AWS-RunShellScript" \
           --comment "Actualizar back-venta desde ECR" \
           --parameters '{"commands":[
