@@ -47,3 +47,4 @@ jobs:
             "docker run -d --name contenedor-back-despacho -p 5000:5000 558314634857.dkr.ecr.'${{ secrets.AWS_REGION }}'.amazonaws.com/back-despacho:latest"
           ]}' \
           --output text
+          
