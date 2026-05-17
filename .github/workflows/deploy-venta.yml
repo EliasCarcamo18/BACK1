@@ -25,8 +25,17 @@ jobs:
 
     - name: Build imagen Backend y push a ECR
       run: |
-        TARGET_DIR=$(find . -type d -name "Springboot-API-REST-VENTAS" -print -quit)
-        if [ -z "$TARGET_DIR" ]; then echo "Error: Carpeta del proyecto no encontrada"; exit 1; fi
+        # Buscador infalible: Busca el Dockerfile dentro de la ruta de Ventas
+        DOCKERFILE_PATH=$(find . -path "*back-Ventas*" -name "Dockerfile" -print -quit)
+        
+        if [ -z "$DOCKERFILE_PATH" ]; then 
+          echo "Error: No se encontró ningún Dockerfile en las carpetas de Ventas"; 
+          exit 1; 
+        fi
+        
+        TARGET_DIR=$(dirname "$DOCKERFILE_PATH")
+        echo "Carpeta encontrada con éxito de forma automática: $TARGET_DIR"
+        
         cd "$TARGET_DIR"
         docker build -t back-venta .
         docker tag back-venta:latest 558314634857.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/back-venta:latest
