@@ -25,16 +25,16 @@ jobs:
 
     - name: Build imagen Backend y push a ECR
       run: |
-        # Buscador infalible: Busca el Dockerfile dentro de la ruta de Ventas
-        DOCKERFILE_PATH=$(find . -path "*back-Ventas*" -name "Dockerfile" -print -quit)
+        # Buscar el Dockerfile dinámicamente sin importar las mayúsculas o la ruta exacta
+        DOCKERFILE_PATH=$(find . -iname "Dockerfile" | grep -i "venta" | head -n 1)
         
         if [ -z "$DOCKERFILE_PATH" ]; then 
-          echo "Error: No se encontró ningún Dockerfile en las carpetas de Ventas"; 
+          echo "Error: No se encontró ningún Dockerfile para Venta"; 
           exit 1; 
         fi
         
         TARGET_DIR=$(dirname "$DOCKERFILE_PATH")
-        echo "Carpeta encontrada con éxito de forma automática: $TARGET_DIR"
+        echo "Carpeta de Venta encontrada: $TARGET_DIR"
         
         cd "$TARGET_DIR"
         docker build -t back-venta .
