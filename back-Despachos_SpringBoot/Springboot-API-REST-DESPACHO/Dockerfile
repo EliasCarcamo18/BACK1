@@ -13,7 +13,8 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto interno (en el compose lo sacaremos por el 8081)
+# Exponer el puerto interno
 EXPOSE 8080
 
-CMD ["java", "-jar", "app.jar"]
+# NUEVA LÍNEA OPTIMIZADA: Control estricto de memoria RAM
+CMD ["java", "-XX:+UseSerialGC", "-Xss512k", "-Xmx180m", "-jar", "app.jar"]
